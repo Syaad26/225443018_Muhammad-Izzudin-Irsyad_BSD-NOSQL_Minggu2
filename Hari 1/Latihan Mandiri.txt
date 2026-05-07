@@ -1,0 +1,38 @@
+Latihan Mandiri
+
+use latihan5
+
+db.data_sensor.drop()
+
+let docs = []
+
+let sensorList = []
+for (let i = 1; i <= 20; i++) {
+  sensorList.push("S" + i.toString().padStart(2, '0'))
+}
+
+// mulai dari 30 hari terakhir
+let start = new Date()
+start.setDate(start.getDate() - 30)
+
+for (let i = 0; i < 5000; i++) {
+  let waktu = new Date(start.getTime() + Math.random() * 30 * 24 * 60 * 60 * 1000)
+
+  docs.push({
+    sensor_id: sensorList[Math.floor(Math.random() * sensorList.length)],
+    nilai: Math.floor(Math.random() * 101), // 0 - 100
+    timestamp: waktu,
+    category: ["A", "B", "C"][Math.floor(Math.random() * 3)]
+  })
+
+  // insert per 500 biar ringan
+  if (docs.length === 500) {
+    db.data_sensor.insertMany(docs)
+    docs = []
+  }
+}
+
+// sisa data
+if (docs.length > 0) {
+  db.data_sensor.insertMany(docs)
+}
